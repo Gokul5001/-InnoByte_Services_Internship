@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <h1>Profile</h1>
+    <button id="getProfile">Get Profile</button>
+    <pre id="profileData"></pre>
+
+    <script>
+        document.getElementById('getProfile').addEventListener('click', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('You are not logged in');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/profile', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` } // Correctly set Authorization header
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                document.getElementById('profileData').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error('Fetch error:', error.message);
+                alert('Failed to fetch profile data');
+            }
+        });
+    </script>
+</body>
+</html>
+    
